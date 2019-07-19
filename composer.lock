@@ -1,0 +1,54 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "8b803a4dca338891f3e6d831dc31c915",
+    "packages": [
+        {
+            "name": "celestriode/constructure",
+            "version": "v0.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/celestriode/constructure.git",
+                "reference": "2244d61857a4253c40cd4bb713035feb71c5ac36"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/celestriode/constructure/zipball/2244d61857a4253c40cd4bb713035feb71c5ac36",
+                "reference": "2244d61857a4253c40cd4bb713035feb71c5ac36",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Celestriode\\Constructure\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Celestriode",
+                    "homepage": "https://github.com/celestriode"
+                }
+            ],
+            "description": "Container for structural validation for whatever potential type of structure there is to validate, such as JSON or NBT.",
+            "time": "2019-07-19T03:47:59+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

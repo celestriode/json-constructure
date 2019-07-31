@@ -59,6 +59,11 @@ abstract class AbstractScalar extends AbstractJson
      */
     public function contextToString(PrettifySupplier $prettifySupplier = null): string
     {
+        if ($prettifySupplier !== null) {
+
+            return $prettifySupplier->prettify((string)$this->getValue());
+        }
+
         return (string)json_encode($this->getValue());
     }
 

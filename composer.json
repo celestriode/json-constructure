@@ -16,8 +16,10 @@
         "php": "^7.0",
         "celestriode/constructure": "^0.1.0",
         "celestriode/jsonlint": "^1.0.0",
-        "ramsey/uuid": "^3.8",
-        "phpunit/phpunit": "^8.2"
+        "ramsey/uuid": "^3.8"
     },
-    "license": "MIT"
+    "license": "MIT",
+    "require-dev": {
+        "phpunit/phpunit": "^8.2"
+    }
 }

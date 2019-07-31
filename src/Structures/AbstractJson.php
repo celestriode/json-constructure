@@ -69,14 +69,12 @@ abstract class AbstractJson extends AbstractExpectedStructure implements InputIn
         // If the input is null and the value is allowed to be null, skip silently.
 
         if ($input instanceof JsonNull && $this->isNullable()) {
-
             return true;
         }
 
         // Skip if it's either the wrong class or is Json but not the correct datatype.
 
         if (!$this->isCorrectType($input, $reports)) {
-
             return false;
         }
 
@@ -91,7 +89,7 @@ abstract class AbstractJson extends AbstractExpectedStructure implements InputIn
 
     /**
      * Returns the Json based on the provided UUID. If none existed, \RunetimeException is thrown.
-     * 
+     *
      * Use setUuid() to apply a UUID to a structure.
      *
      * @param UuidInterface $targetUuid The UUID of the Json to locate.
@@ -102,7 +100,6 @@ abstract class AbstractJson extends AbstractExpectedStructure implements InputIn
         // Throw if the UUID isn't stored.
 
         if (!isset(self::$uuids[$targetUuid->toString()])) {
-
             throw new \RuntimeException('There was no Json stored with the UUID "' . $targetUuid->toString() . '"');
         }
 
@@ -181,9 +178,9 @@ abstract class AbstractJson extends AbstractExpectedStructure implements InputIn
 
     /**
      * Sets the structure as allowing or disallowing null values.
-     * 
+     *
      * This is prevelant with fields but done on the Json-level.
-     * 
+     *
      * By default, structures will not accept null values.
      *
      * @param boolean $nullable Whether or not the structure can be null.
@@ -220,14 +217,12 @@ abstract class AbstractJson extends AbstractExpectedStructure implements InputIn
         // If the input isn't Json, bad.
 
         if (!($input instanceof AbstractJson)) {
-
             throw new \InvalidArgumentException('Inputs for comparison can only be AbstractJson classes.');
         }
 
         // If the input is Json but isn't the correct datatype, bad.
 
         if (!($input->isType($this->getType()))) {
-
             $reports->addReport(Message::error($input->getContext(), 'Invalid type %s, should instead be %s', $input->getTypeName(), $this->getTypeName()));
 
             return false;

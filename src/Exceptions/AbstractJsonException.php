@@ -7,5 +7,4 @@ use Celestriode\Constructure\Exceptions\AbstractReportException;
  */
 abstract class AbstractJsonException extends AbstractReportException
 {
-    
 }

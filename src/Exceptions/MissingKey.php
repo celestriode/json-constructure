@@ -5,5 +5,4 @@
  */
 class MissingKey extends AbstractJsonException
 {
-
 }

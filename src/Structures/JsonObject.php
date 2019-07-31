@@ -21,7 +21,6 @@ class JsonObject extends AbstractJson
     public function __construct(Field ...$fields)
     {
         foreach ($fields as $field) {
-
             $this->setField($field);
         }
 
@@ -75,7 +74,6 @@ class JsonObject extends AbstractJson
             // If there are more fields, add a comma.
 
             if ($i + 1 < $max) {
-
                 $buffer .= ',';
             }
 
@@ -89,7 +87,7 @@ class JsonObject extends AbstractJson
 
     /**
      * Add a field with the key provided via the field.
-     * 
+     *
      * If a field with the key already existed in the object,
      * it will be overridden.
      *
@@ -118,7 +116,7 @@ class JsonObject extends AbstractJson
 
     /**
      * Returns a field with the given key.
-     * 
+     *
      * If no such field exists, an error is thrown.
      *
      * @param string $key
@@ -129,7 +127,6 @@ class JsonObject extends AbstractJson
         // If the field is missing in the expected structure, throw an error.
 
         if (!$this->hasField($key)) {
-
             throw MissingKey::create(Message::error($this->getContext(), 'Could not locate key %s', $key));
         }
 
@@ -203,7 +200,6 @@ class JsonObject extends AbstractJson
             // If it's a placeholder, store it for deferred action.
 
             if ($field->isPlaceholder()) {
-
                 $placeholders[] = $field;
 
                 continue;
@@ -241,7 +237,6 @@ class JsonObject extends AbstractJson
 
         /** @var Field $placeholder */
         foreach ($placeholders as $placeholder) {
-
             foreach ($unexpectedFields as $index => $inputFieldKey) {
 
                 /** @var Field $inputField */
@@ -250,13 +245,11 @@ class JsonObject extends AbstractJson
                 // If the datatype matches this placeholder...
 
                 if ($inputField->getJson()->isType($placeholder->getJson()->getType())) {
-
                     unset($unexpectedFields[$index]);
 
                     // Check if the placeholder's structure matches.
 
                     if (!$placeholder->getJson()->compareStructure($inputField->getJson(), $reports, $statistics)) {
-
                         $allSucceeds = false;
                     }
                 }
@@ -270,7 +263,6 @@ class JsonObject extends AbstractJson
         // Add report if there were unexpected keys.
 
         if (!empty($unexpectedFields)) {
-
             $reports->addReport(Message::warn($input->getContext(), 'Unexpected keys found (%s); accepted keys: %s', implode(', ', $unexpectedFields), implode(', ', array_keys($fields))));
             
             $allSucceeds = false;
@@ -284,7 +276,7 @@ class JsonObject extends AbstractJson
     /**
      * Takes an array of string keys and removes keys that should not
      * cause validation errors.
-     * 
+     *
      * By default this process is done after validating everything and
      * thus the keys provided are fields that the input has that could
      * not be found in the expected structure.
@@ -326,7 +318,7 @@ class JsonObject extends AbstractJson
 
     /**
      * Returns a list of ignored keys.
-     * 
+     *
      * Takes in an array of keys that it can use to
      * generate a list of global keys, such as using
      * regex to find any key that contains "comment"
@@ -346,7 +338,6 @@ class JsonObject extends AbstractJson
             // If the key contains the word "comment", add that key to the list.
 
             if (stripos($key, 'comment') !== false) {
-
                 $buffer[] = $key;
             }
         }
@@ -358,7 +349,7 @@ class JsonObject extends AbstractJson
 
     /**
      * Returns an array of branches that succeed.
-     * 
+     *
      * The outcome of these branches will be added to the object's list
      * of fields during validation.
      *
@@ -386,7 +377,6 @@ class JsonObject extends AbstractJson
 
                 /** @var Field $field */
                 foreach ($branch->getOutcomes() as $field) {
-
                     $buffer[$field->getKey()] = $field;
                 }
             }

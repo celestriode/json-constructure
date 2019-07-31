@@ -8,32 +8,32 @@ use Celestriode\JsonConstructure\Structures\Root;
 
 /**
  * Utilities for traversing AbstractJson objects by way of string-based path syntax.
- * 
+ *
  * Paths must start with either $ or @.
- * 
+ *
  * $ = start the search from the root parent.
  * @ = start the search from the current depth.
- * 
+ *
  * From there, you may ascend with the token ^. This will go up one parent, if possible.
  * Ascension tokens may be chained to continue going up. For example, the following will
  * start the search at the current depth and ascend 2 parents. The result of the path is
  * that parent.
- * 
+ *
  * @^^
- * 
+ *
  * Once you have ascended as high as you need to go, you can use the . token to descend to
  * specific children, which are specified as a key name after the token. For example, the
  * following will start at the root parent and return the child field "hello".
- * 
+ *
  * $.test.hello
- * 
+ *
  * That would match JSON such as: {"test": {"hello": true}}
- * 
+ *
  * One final example, which ascends twice from the depth of the supplied AbstractJson, then
  * descends down the "find" object and ends at "me", whatever datatype it might be.
- * 
+ *
  * @^^.find.me
- * 
+ *
  * This does not support array traversal because it can only return a single AbstractJson
  * object. It may eventually support traversing specific indices within an array, or
  * performing a search within an array and returning only the first result. The second
@@ -87,7 +87,7 @@ class JsonPath
 
     /**
      * Parses the path string and returns the traversable path as a flat array.
-     * 
+     *
      * @param string $pathString The raw path to parse.
      * @return array
      */
@@ -96,7 +96,6 @@ class JsonPath
         // If strlen is 0, throw
 
         if (strlen($pathString) == 0) {
-
             throw new \LogicException('Path cannot be empty');
         }
 
@@ -109,14 +108,12 @@ class JsonPath
         // If the first character isn't current or root, throw error.
 
         if ($stringParts[0] != '@' && $stringParts[0] != '$') {
-
             throw new \LogicException('Path must begin with current (@) or root ($)');
         }
 
         // Cycle through each character
 
         for ($i = 0, $j = count($stringParts); $i < $j; $i++) {
-
             $currentChar = $stringParts[$i];
             $currentPathIndex = count($path);
 
@@ -127,27 +124,22 @@ class JsonPath
                 // Add current character to buffer as long as it's not a backslash and the character before it wasn't a backslash. This is so shitty.
 
                 if ($currentChar != '\\' || ($i > 0 && $stringParts[$i - 1] == '\\')) {
-
                     $buffer .= $currentChar;
                 }
 
                 // If the next character is an unescaped control character, we're done with this child.
 
                 if (($i + 1 != $j && in_array($stringParts[$i + 1], ['$', '^', '.']) && $currentChar !== '\\') || $i + 1 == $j) {
-
                     $path[$currentPathIndex - 1]['key'] = $buffer;
                     $buffer = '';
                     $findingKey = false;
                 }
-
             } else {
 
                 // Type: @ (current)
 
                 if ($currentChar == '@') {
-
                     if ($i != 0) {
-
                         throw new \LogicException('Cannot use current if not at beginning');
                     }
 
@@ -159,7 +151,6 @@ class JsonPath
                     // Type: $ (root)
 
                     if ($i != 0) {
-
                         throw new \LogicException('Cannot go to root if not at beginning');
                     }
 
@@ -171,12 +162,10 @@ class JsonPath
                     // Type: ^ (ascend)
 
                     if (isset($path[$currentPathIndex - 1]) && $path[$currentPathIndex - 1]['type'] == 'child') {
-
                         throw new \LogicException('Cannot ascend after going to a child');
                     }
 
                     if (isset($path[$currentPathIndex - 1]) && $path[$currentPathIndex - 1]['type'] == 'root') {
-
                         throw new \LogicException('Cannot ascend after going to the root');
                     }
 
@@ -223,19 +212,15 @@ class JsonPath
             // Type: root
 
             if ($path['type'] == 'root') {
-
                 $root = $json;
 
                 while ($root->getParentInput() !== null) {
-
                     $root = $root->getParentInput();
                 }
 
                 if ($root instanceof Root) {
-
                     $currentJson = $root->getRootType();
                 } else {
-
                     $currentJson = $root;
                 }
             }
@@ -243,9 +228,7 @@ class JsonPath
             // Type: ascend.
 
             if ($path['type'] == 'ascend') {
-
                 if ($currentJson->getParentInput() === null || $currentJson->getParentInput() instanceof Root) {
-
                     throw PathException::create(Message::error($json, 'Path traversal failed with path %s: could not ascend far enough due to lack of parent', $this->rawPath));
                 }
 
@@ -255,14 +238,11 @@ class JsonPath
             // Type: child
 
             if ($path['type'] == 'child') {
-
                 if (!($currentJson instanceof JsonObject)) {
-
                     throw PathException::create(Message::error($json, 'Path traversal failed with path %s: target for traversal is not an object', $this->rawPath));
                 }
 
                 if (!$currentJson->hasField($path['key'])) {
-
                     throw PathException::create(Message::error($json, 'Path traversal failed with path %s: could not find field with key %s', $this->rawPath, $path['key']));
                 }
 
@@ -287,7 +267,6 @@ class JsonPath
         // If the path was already parsed, return it.
 
         if (array_key_exists($path, self::$cachedPaths)) {
-
             return self::$cachedPaths[$path];
         }
 

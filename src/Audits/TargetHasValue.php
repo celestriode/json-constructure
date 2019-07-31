@@ -15,9 +15,9 @@ use Celestriode\JsonConstructure\Predicates\AbstractJsonPredicate;
 
 /**
  * Tests if the element at the provided path contains any of the specified values.
- * 
+ *
  * The target element must extend the AbstractScalar class.
- * 
+ *
  * You can simply use "@" to target the current element.
  */
 class TargetHasValue extends AbstractAudit
@@ -56,9 +56,7 @@ class TargetHasValue extends AbstractAudit
         // Test the predicate. If it fails, add any issues deriving from it to reports.
 
         if (!$predicate->test($input)) {
-
             foreach ($predicate->getIssues() as $issue) {
-
                 $reports->addReport($issue->getReportMessage());
             }
 
@@ -79,8 +77,7 @@ class TargetHasValue extends AbstractAudit
      */
     public static function getAsPredicate(JsonPath $targetPath, ...$values): PredicateInterface
     {
-        return new class($targetPath, ...$values) extends AbstractJsonPredicate
-        {
+        return new class($targetPath, ...$values) extends AbstractJsonPredicate {
             /** @var JsonPath $targetPath The parsed path to the target element. */
             private $targetPath;
             /** @var array $acceptedValues The values that can be accepted. */
@@ -104,20 +101,17 @@ class TargetHasValue extends AbstractAudit
                 // Skip if the structure is not a Json class.
 
                 if (!$this->isCorrectStructure($input)) {
-
                     return false;
                 }
 
                 // Get the target from the path.
 
                 try {
-
                     $target = $this->targetPath->findInJson($input);
 
                     // If it's the wrong datatype, return false.
 
                     if (!($target instanceof AbstractScalar)) {
-
                         $this->addIssue(AuditFailed::create(Message::error($input->getContext(), 'Target must be of type "scalar", was instead type %s', $input->getTypeName())));
 
                         return false;
@@ -126,7 +120,6 @@ class TargetHasValue extends AbstractAudit
                     // Otherwise return whether or not the value exists within the array of accepted values.
                     
                     if (!in_array($target->getValue(), $this->acceptedValues)) {
-
                         $this->addIssue(AuditFailed::create(Message::warn($target->getContext(), 'Invalid value %s, should be one of: %s', (string)$target->getValue(), implode(', ', $this->acceptedValues))));
 
                         return false;

@@ -19,14 +19,14 @@ use Seld\JsonLint\JsonParser;
 
 /**
  * Helper class to more easily create Json structures.
- * 
+ *
  * Also contains a couple datatype-related helper methods.
  */
 class Json
 {
     /**
      * Turns a JSON string into a Json constructure.
-     * 
+     *
      * If there are parsing errors, they will not be caught.
      *
      * @param string $json The JSON to transform.
@@ -51,30 +51,23 @@ class Json
         // Handle primitive data.
 
         if ($data === null) {
-
             return new JsonNull();
         } elseif (is_string($data)) {
-
             return new JsonString($data);
         } elseif ($data === true || $data === false) {
-
             return new JsonBoolean($data);
         } elseif (is_double($data)) {
-
             return new JsonDouble($data);
         } elseif (is_integer($data)) {
-
             return new JsonInteger($data);
         }
 
         // Handle objects.
 
         if ($data instanceof \stdClass) {
-
             $object = new JsonObject();
 
             foreach ($data as $key => $value) {
-
                 $object->setField(Field::key($key, static::turnDataIntoStructure($value)));
             }
 
@@ -84,11 +77,9 @@ class Json
         // Handle arrays.
 
         if (is_array($data)) {
-
             $array = new JsonArray();
 
             foreach ($data as $element) {
-
                 $array->addElements(static::turnDataIntoStructure($element));
             }
 
@@ -126,7 +117,7 @@ class Json
 
     /**
      * Takes in a list of Json and combines their type names into a single string.
-     * 
+     *
      * TODO: prevent duplicate names by adding both number() and scalar() to mixed().
      * Requires rewriting how type names are supplied.
      *
@@ -144,7 +135,6 @@ class Json
             // Add their type name to the list.
 
             if (!in_array($type->getTypeName(), $names)) {
-
                 $names[] = $type->getTypeName();
             }
         }

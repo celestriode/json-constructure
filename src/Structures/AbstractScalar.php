@@ -8,12 +8,12 @@ use Celestriode\Constructure\Reports\PrettifySupplier;
 
 /**
  * Parent class for all scalar Json datatypes.
- * 
+ *
  * This includes booleans, integers, doubles, strings, and nulls.
- * 
+ *
  * Primarily just acts as a container for the value itself and reduces need for
  * duplicate code.
- * 
+ *
  * Note that this differs from the JsonScalar class, which is a standard
  * implementation of the JsonMixed that makes use of all scalar values,
  * making it simpler to create a scalar structure.
@@ -96,7 +96,6 @@ abstract class AbstractScalar extends AbstractJson
         // If the expected structure actually has a value (which should be a rare event), check if it matches the input's value.
 
         if ($this->getValue() !== null && $input->getValue() !== $this->getValue()) {
-
             $reports->addReport(Message::warn($input->getContext(), 'Value %s does not match the expected value %s', (string)$input->getValue(), (string)$this->getValue()));
 
             return false;

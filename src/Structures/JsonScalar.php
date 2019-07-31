@@ -40,7 +40,6 @@ class JsonScalar extends AbstractScalar
     public function contextToString(PrettifySupplier $prettifySupplier = null): string
     {
         if ($this->getValue() !== null) {
-
             return parent::contextToString($prettifySupplier);
         }
 

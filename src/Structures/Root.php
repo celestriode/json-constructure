@@ -7,7 +7,7 @@ use Celestriode\Constructure\Reports\ReportsInterface;
 
 /**
  * The root structure that all Json should start with.
- * 
+ *
  * Not really required, but JsonConstructure.validateFromString() will
  * make use of it.
  */
@@ -62,7 +62,6 @@ final class Root extends AbstractJson
     public function setParentInput(AbstractJson $parent = null): void
     {
         if ($parent !== null) {
-
             throw new \LogicException('Root cannot have a parent');
         }
     }

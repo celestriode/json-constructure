@@ -5,5 +5,4 @@
  */
 class PathException extends AbstractJsonException
 {
-    
 }

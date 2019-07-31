@@ -9,7 +9,7 @@ use Celestriode\Constructure\Statistics\Statistics;
  * A container of fields that is used by JsonObject. If the
  * supplied predicate succeeds, then the fields are added to
  * the object for structural validation.
- * 
+ *
  * This allows manipulation of the structure based on whatever
  * condition is needed.
  */

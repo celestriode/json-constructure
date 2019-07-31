@@ -12,7 +12,7 @@ use Celestriode\Constructure\Statistics\Statistics;
  * reaches the redirect, the redirect will validate
  * using the structure of the Json that has the
  * corresponding Uuid.
- * 
+ *
  * Use setUuid() on the structure you want to redirect to.
  */
 class JsonRedirect extends AbstractJson
@@ -121,7 +121,7 @@ class JsonRedirect extends AbstractJson
 
     /**
      * Sets the target based on the stored Uuid.
-     * 
+     *
      * Note that loading the target is deferred. If it wasn't,
      * then targeting by Uuid would require the structure to be
      * restricted to a specific order, which may not be possible.

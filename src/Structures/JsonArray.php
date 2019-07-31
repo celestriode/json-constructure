@@ -7,13 +7,13 @@ use Celestriode\Constructure\Reports\Message;
 
 /**
  * A Json array structure.
- * 
+ *
  * Currently it is lenient with its validation. That is,
  * if all of the input's elements successfully matched
  * the expected structure's elements, but the expected
  * structure still had some extra elements to validate,
  * it will still pass.
- * 
+ *
  * Maybe one day it'll have an option to be restrictive.
  */
 class JsonArray extends AbstractJson
@@ -73,7 +73,6 @@ class JsonArray extends AbstractJson
             // If there's more elements available, add a comma.
 
             if ($i + 1 < $j) {
-
                 $buffer .= ',';
             }
         }
@@ -108,14 +107,12 @@ class JsonArray extends AbstractJson
                 // If the datatype matches...
 
                 if ($inputElement->isType($template->getType())) {
-
                     $anySucceedsForElement = true;
                     $statistics->addStat(1, 'elements', $inputElement->getTypeName());
 
                     // If the template failed to match, completely broken.
 
                     if (!$template->compareStructure($inputElement, $reports, $statistics)) {
-
                         $anySucceeds = false;
                     }
                 }
@@ -124,7 +121,6 @@ class JsonArray extends AbstractJson
             // If the individual element failed to match any templates, add report.
 
             if (!$anySucceedsForElement) {
-
                 $reports->addReport(Message::warn($inputElement->getContext(), 'Unexpected array element at position %s', (string)$index));
 
                 $anySucceeds = false;
@@ -138,7 +134,7 @@ class JsonArray extends AbstractJson
 
     /**
      * Appends accepted elements to this array's list of accepted elements.
-     * 
+     *
      * @param AbstractJson ...$elements The elements to append.
      * @return void
      */

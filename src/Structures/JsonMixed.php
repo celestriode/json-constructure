@@ -8,9 +8,9 @@ use Celestriode\Constructure\Reports\Message;
 
 /**
  * A Json structure of varying type.
- * 
+ *
  * Use this for odd combos. Don't use this for preset combos like:
- * 
+ *
  * JsonNumber
  * JsonScalar
  */
@@ -102,7 +102,6 @@ class JsonMixed extends AbstractJson
             // If there's more accepted Json, add a comma.
 
             if ($i + 1 < $j) {
-
                 $buffer .= ',';
             }
         }

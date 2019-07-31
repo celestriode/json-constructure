@@ -2,7 +2,7 @@
 
 /**
  * A key/value field used by JsonObject.
- * 
+ *
  * This holds the key and the value of a field, but also
  * allows for some options relating to fields, such as
  * whether or not they are required or if the key itself

@@ -11,7 +11,7 @@ abstract class AbstractJsonPredicate extends AbstractPredicate
 {
     /**
      * Returns whether or not the input is the correct structure.
-     * 
+     *
      * In this context, the InputInterface must extend AbstractJson.
      *
      * @param InputInterface $input The input to validate.

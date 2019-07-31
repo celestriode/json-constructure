@@ -263,7 +263,7 @@ class JsonObject extends AbstractJson
         // Add report if there were unexpected keys.
 
         if (!empty($unexpectedFields)) {
-            $input->addStructureReport(Message::warn($input->getContext(), 'Unexpected keys found (%s); accepted keys: %s', MessageUtils::key(...$unexpectedFields), MessageUtils::key(...$fields)), $reports);
+            $input->addStructureReport(Message::warn($input->getContext(), 'Unexpected keys found (%s); accepted keys: %s', MessageUtils::key(...$unexpectedFields), MessageUtils::key(...array_keys($fields))), $reports);
             
             $allSucceeds = false;
         }

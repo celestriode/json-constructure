@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "celestriode/constructure",
-            "version": "v0.2.0",
+            "version": "v0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/celestriode/constructure.git",
-                "reference": "ec1278176e1ba4030a783e2d1fe863716f3e86e2"
+                "reference": "1f71ad3a8d63c61c9a12a1ca6d398899c8782bce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/celestriode/constructure/zipball/ec1278176e1ba4030a783e2d1fe863716f3e86e2",
-                "reference": "ec1278176e1ba4030a783e2d1fe863716f3e86e2",
+                "url": "https://api.github.com/repos/celestriode/constructure/zipball/1f71ad3a8d63c61c9a12a1ca6d398899c8782bce",
+                "reference": "1f71ad3a8d63c61c9a12a1ca6d398899c8782bce",
                 "shasum": ""
             },
             "require": {
@@ -43,7 +43,7 @@
                 }
             ],
             "description": "Container for structural validation for whatever potential type of structure there is to validate, such as JSON or NBT.",
-            "time": "2019-07-31T19:01:45+00:00"
+            "time": "2019-07-31T19:29:33+00:00"
         },
         {
             "name": "celestriode/jsonlint",

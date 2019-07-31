@@ -3,7 +3,7 @@
 use Celestriode\Constructure\Reports\ReportsInterface;
 use Celestriode\Constructure\Statistics\Statistics;
 use Celestriode\Constructure\Reports\Message;
-use Celestriode\Constructure\Reports\PrettifySupplier;
+use Celestriode\Constructure\Reports\PrettifySupplierInterface;
 use Celestriode\Constructure\Utils\MessageUtils;
 
 /**
@@ -54,10 +54,10 @@ abstract class AbstractScalar extends AbstractJson
      * be a structure to validate, and thus should have a string representation
      * for the user to see.
      *
-     * @param PrettifySupplier $prettifySupplier Optional function to prettify data with.
+     * @param PrettifySupplierInterface $prettifySupplier Optional function to prettify data with.
      * @return string
      */
-    public function contextToString(PrettifySupplier $prettifySupplier = null): string
+    public function contextToString(PrettifySupplierInterface $prettifySupplier = null): string
     {
         if ($prettifySupplier !== null) {
 

@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "555995a27358f27fef4d1afdc1e60955",
+    "content-hash": "6d6d44c92011959147db298bd579af57",
     "packages": [
         {
             "name": "celestriode/constructure",
-            "version": "v0.1.4",
+            "version": "v0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/celestriode/constructure.git",
-                "reference": "63a2ee4cd577d2b1391eadf4684af924fa6e42e0"
+                "reference": "ec1278176e1ba4030a783e2d1fe863716f3e86e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/celestriode/constructure/zipball/63a2ee4cd577d2b1391eadf4684af924fa6e42e0",
-                "reference": "63a2ee4cd577d2b1391eadf4684af924fa6e42e0",
+                "url": "https://api.github.com/repos/celestriode/constructure/zipball/ec1278176e1ba4030a783e2d1fe863716f3e86e2",
+                "reference": "ec1278176e1ba4030a783e2d1fe863716f3e86e2",
                 "shasum": ""
             },
             "require": {
@@ -43,7 +43,7 @@
                 }
             ],
             "description": "Container for structural validation for whatever potential type of structure there is to validate, such as JSON or NBT.",
-            "time": "2019-07-31T16:47:05+00:00"
+            "time": "2019-07-31T19:01:45+00:00"
         },
         {
             "name": "celestriode/jsonlint",

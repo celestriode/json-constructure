@@ -1,6 +1,6 @@
 <?php namespace Celestriode\JsonConstructure\Structures;
 
-use Celestriode\Constructure\Reports\PrettifySupplier;
+use Celestriode\Constructure\Reports\PrettifySupplierInterface;
 use Celestriode\Constructure\Statistics\Statistics;
 use Celestriode\Constructure\Reports\ReportsInterface;
 
@@ -84,10 +84,10 @@ final class Root extends AbstractJson
      * be a structure to validate, and thus should have a string representation
      * for the user to see.
      *
-     * @param PrettifySupplier $prettifySupplier Optional function to prettify data with.
+     * @param PrettifySupplierInterface $prettifySupplier Optional function to prettify data with.
      * @return string
      */
-    public function contextToString(PrettifySupplier $prettifySupplier = null): string
+    public function contextToString(PrettifySupplierInterface $prettifySupplier = null): string
     {
         return $this->rootType->contextToString($prettifySupplier);
     }

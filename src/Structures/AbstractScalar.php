@@ -1,10 +1,10 @@
 <?php namespace Celestriode\JsonConstructure\Structures;
 
-use Celestriode\Constructure\InputInterface;
 use Celestriode\Constructure\Reports\ReportsInterface;
 use Celestriode\Constructure\Statistics\Statistics;
 use Celestriode\Constructure\Reports\Message;
 use Celestriode\Constructure\Reports\PrettifySupplier;
+use Celestriode\Constructure\Utils\MessageUtils;
 
 /**
  * Parent class for all scalar Json datatypes.
@@ -13,10 +13,6 @@ use Celestriode\Constructure\Reports\PrettifySupplier;
  *
  * Primarily just acts as a container for the value itself and reduces need for
  * duplicate code.
- *
- * Note that this differs from the JsonScalar class, which is a standard
- * implementation of the JsonMixed that makes use of all scalar values,
- * making it simpler to create a scalar structure.
  */
 abstract class AbstractScalar extends AbstractJson
 {
@@ -82,7 +78,7 @@ abstract class AbstractScalar extends AbstractJson
     /**
      * Custom comparison method, called by AbstractJson.compareStructure().
      *
-     * @param InputInterface $input The input to compare with the structure.
+     * @param AbstractJson $input The input to compare with the structure.
      * @param ReportsInterface $reports Reports to add messages to.
      * @param Statistics $statistics Statistics to manipulate.
      * @return boolean
@@ -96,7 +92,7 @@ abstract class AbstractScalar extends AbstractJson
         // If the expected structure actually has a value (which should be a rare event), check if it matches the input's value.
 
         if ($this->getValue() !== null && $input->getValue() !== $this->getValue()) {
-            $reports->addReport(Message::warn($input->getContext(), 'Value %s does not match the expected value %s', (string)$input->getValue(), (string)$this->getValue()));
+            $input->addStructureReport(Message::warn($input->getContext(), 'Value %s does not match the expected value %s', MessageUtils::value((string)$input->getValue()), MessageUtils::value((string)$this->getValue())), $reports);
 
             return false;
         }

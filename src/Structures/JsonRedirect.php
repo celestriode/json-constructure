@@ -2,7 +2,6 @@
 
 use Ramsey\Uuid\UuidInterface;
 use Celestriode\Constructure\Reports\PrettifySupplier;
-use Celestriode\Constructure\InputInterface;
 use Celestriode\Constructure\Reports\ReportsInterface;
 use Celestriode\Constructure\Statistics\Statistics;
 
@@ -141,7 +140,7 @@ class JsonRedirect extends AbstractJson
     /**
      * Custom comparison method, called by AbstractJson.compareStructure().
      *
-     * @param InputInterface $input The input to compare with the structure.
+     * @param AbstractJson $input The input to compare with the structure.
      * @param ReportsInterface $reports Reports to add messages to.
      * @param Statistics $statistics Statistics to manipulate.
      * @return boolean

@@ -5,6 +5,7 @@ use Celestriode\JsonConstructure\Structures\JsonObject;
 use Celestriode\JsonConstructure\Exceptions\PathException;
 use Celestriode\Constructure\Reports\Message;
 use Celestriode\JsonConstructure\Structures\Root;
+use Celestriode\Constructure\Utils\MessageUtils;
 
 /**
  * Utilities for traversing AbstractJson objects by way of string-based path syntax.
@@ -229,7 +230,7 @@ class JsonPath
 
             if ($path['type'] == 'ascend') {
                 if ($currentJson->getParentInput() === null || $currentJson->getParentInput() instanceof Root) {
-                    throw PathException::create(Message::error($json, 'Path traversal failed with path %s: could not ascend far enough due to lack of parent', $this->rawPath));
+                    throw PathException::create(Message::error($json, 'Path traversal failed with path %s: could not ascend far enough due to lack of parent', MessageUtils::value($this->rawPath)));
                 }
 
                 $currentJson = $currentJson->getParentInput();
@@ -239,11 +240,11 @@ class JsonPath
 
             if ($path['type'] == 'child') {
                 if (!($currentJson instanceof JsonObject)) {
-                    throw PathException::create(Message::error($json, 'Path traversal failed with path %s: target for traversal is not an object', $this->rawPath));
+                    throw PathException::create(Message::error($json, 'Path traversal failed with path %s: target for traversal is not an object', MessageUtils::value($this->rawPath)));
                 }
 
                 if (!$currentJson->hasField($path['key'])) {
-                    throw PathException::create(Message::error($json, 'Path traversal failed with path %s: could not find field with key %s', $this->rawPath, $path['key']));
+                    throw PathException::create(Message::error($json, 'Path traversal failed with path %s: could not find field with key %s', MessageUtils::value($this->rawPath), MessageUtils::key($path['key'])));
                 }
 
                 $currentJson = $currentJson->getField($path['key'])->getJson();

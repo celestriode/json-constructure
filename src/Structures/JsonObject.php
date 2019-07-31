@@ -2,11 +2,11 @@
 
 use Celestriode\Constructure\Reports\PrettifySupplier;
 use Celestriode\Constructure\Statistics\Statistics;
-use Celestriode\Constructure\InputInterface;
 use Celestriode\Constructure\Reports\ReportsInterface;
 use Celestriode\Constructure\Reports\Message;
 use Celestriode\Constructure\Predicates\PredicateInterface;
 use Celestriode\JsonConstructure\Exceptions\MissingKey;
+use Celestriode\Constructure\Utils\MessageUtils;
 
 /**
  * A Json object structure.
@@ -127,7 +127,7 @@ class JsonObject extends AbstractJson
         // If the field is missing in the expected structure, throw an error.
 
         if (!$this->hasField($key)) {
-            throw MissingKey::create(Message::error($this->getContext(), 'Could not locate key %s', $key));
+            throw MissingKey::create(Message::error($this->getContext(), 'Could not locate key %s', MessageUtils::key($key)));
         }
 
         // Otherwise return that field.
@@ -173,7 +173,7 @@ class JsonObject extends AbstractJson
     /**
      * Custom comparison method, called by AbstractJson.compareStructure().
      *
-     * @param InputInterface $input The input to compare with the structure.
+     * @param AbstractJson $input The input to compare with the structure.
      * @param ReportsInterface $reports Reports to add messages to.
      * @param Statistics $statistics Statistics to manipulate.
      * @return boolean
@@ -211,7 +211,7 @@ class JsonObject extends AbstractJson
 
                 // Bad if it's required and not specified.
 
-                $reports->addReport(Message::error($input->getContext(), 'Missing required field %s', $key));
+                $input->addStructureReport(Message::error($input->getContext(), 'Missing required field %s', MessageUtils::key($key)), $reports);
 
                 $allSucceeds = false;
             } elseif ($input->hasField($key) && !$field->getJson()->compareStructure($input->getField($key)->getJson(), $reports, $statistics)) {
@@ -263,7 +263,7 @@ class JsonObject extends AbstractJson
         // Add report if there were unexpected keys.
 
         if (!empty($unexpectedFields)) {
-            $reports->addReport(Message::warn($input->getContext(), 'Unexpected keys found (%s); accepted keys: %s', implode(', ', $unexpectedFields), implode(', ', array_keys($fields))));
+            $input->addStructureReport(Message::warn($input->getContext(), 'Unexpected keys found (%s); accepted keys: %s', MessageUtils::key(...$unexpectedFields), MessageUtils::key(...$fields)), $reports);
             
             $allSucceeds = false;
         }
@@ -282,12 +282,12 @@ class JsonObject extends AbstractJson
      * not be found in the expected structure.
      *
      * @param array $keys The array of keys to modify directly.
-     * @param InputInterface $input The input, useful for error messages.
+     * @param AbstractJson $input The input, useful for error messages.
      * @param ReportsInterface $reports Reports to add to.
      * @param Statistics $statistics Statistics to manipulate. Not done by default (yet).
      * @return void
      */
-    protected function removeGlobalKeys(array &$keys, InputInterface $input, ReportsInterface $reports, Statistics $statistics): void
+    protected function removeGlobalKeys(array &$keys, AbstractJson $input, ReportsInterface $reports, Statistics $statistics): void
     {
         $ignoredKeys = [];
 
@@ -312,7 +312,7 @@ class JsonObject extends AbstractJson
 
             // Add a report.
 
-            $reports->addReport(Message::info($input->getContext(), 'Ignoring globally-accepted keys: %s', implode(', ', $ignoredKeys)));
+            $input->addStructureReport(Message::info($input->getContext(), 'Ignoring globally-accepted keys: %s', MessageUtils::key(...$ignoredKeys)), $reports);
         }
     }
 
@@ -353,12 +353,12 @@ class JsonObject extends AbstractJson
      * The outcome of these branches will be added to the object's list
      * of fields during validation.
      *
-     * @param InputInterface $input The input to use for testing.
+     * @param AbstractJson $input The input to use for testing.
      * @param ReportsInterface $reports Reports to add to if successfully branched.
      * @param Statistics $statistics Statistics to manipulate.
      * @return array
      */
-    private function getSuccessfulBranchFields(InputInterface $input, ReportsInterface $reports, Statistics $statistics): array
+    private function getSuccessfulBranchFields(AbstractJson $input, ReportsInterface $reports, Statistics $statistics): array
     {
         $buffer = [];
 
@@ -373,7 +373,7 @@ class JsonObject extends AbstractJson
 
                 // If so, cycle through all outcome fields and add them to the buffer.
 
-                $reports->addReport(Message::debug($input->getContext(), 'Successfully branched to: %s', $branch->getLabel()));
+                $input->addStructureReport(Message::debug($input->getContext(), 'Successfully branched to: %s', MessageUtils::key($branch->getLabel())), $reports);
 
                 /** @var Field $field */
                 foreach ($branch->getOutcomes() as $field) {

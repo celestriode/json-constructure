@@ -2,7 +2,6 @@
 
 use Celestriode\Constructure\Reports\PrettifySupplier;
 use Celestriode\Constructure\Statistics\Statistics;
-use Celestriode\Constructure\InputInterface;
 use Celestriode\Constructure\Reports\ReportsInterface;
 
 /**
@@ -107,7 +106,7 @@ final class Root extends AbstractJson
     /**
      * Custom comparison method, called by AbstractJson.compareStructure().
      *
-     * @param InputInterface $input The input to compare with the structure.
+     * @param AbstractJson $input The input to compare with the structure.
      * @param ReportsInterface $reports Reports to add messages to.
      * @param Statistics $statistics Statistics to manipulate.
      * @return boolean

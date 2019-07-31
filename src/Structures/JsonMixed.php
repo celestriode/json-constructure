@@ -5,6 +5,7 @@ use Celestriode\Constructure\Reports\PrettifySupplier;
 use Celestriode\Constructure\Reports\ReportsInterface;
 use Celestriode\Constructure\Statistics\Statistics;
 use Celestriode\Constructure\Reports\Message;
+use Celestriode\Constructure\Utils\MessageUtils;
 
 /**
  * A Json structure of varying type.
@@ -114,7 +115,7 @@ class JsonMixed extends AbstractJson
     /**
      * Custom comparison method, called by AbstractJson.compareStructure().
      *
-     * @param InputInterface $input The input to compare with the structure.
+     * @param AbstractJson $input The input to compare with the structure.
      * @param ReportsInterface $reports Reports to add messages to.
      * @param Statistics $statistics Statistics to manipulate.
      * @return boolean
@@ -137,7 +138,7 @@ class JsonMixed extends AbstractJson
 
         // Did not match any accept Json, add report and return false.
 
-        $reports->addReport(Message::error($input->getContext(), 'Invalid type %s, must have been one of: %s', $input->getTypeName(), $this->getTypeName()));
+        $input->addStructureReport(Message::error($input->getContext(), 'Invalid type %s, must have been one of: %s', MessageUtils::key($input->getTypeName()), MessageUtils::key($this->getTypeName())), $reports);
 
         return false;
     }

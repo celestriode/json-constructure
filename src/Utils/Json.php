@@ -7,8 +7,6 @@ use Celestriode\JsonConstructure\Structures\JsonString;
 use Celestriode\JsonConstructure\Structures\JsonBoolean;
 use Celestriode\JsonConstructure\Structures\JsonInteger;
 use Celestriode\JsonConstructure\Structures\JsonDouble;
-use Celestriode\JsonConstructure\Structures\JsonNumber;
-use Celestriode\JsonConstructure\Structures\JsonScalar;
 use Celestriode\JsonConstructure\Structures\JsonNull;
 use Celestriode\JsonConstructure\Structures\JsonMixed;
 use Celestriode\JsonConstructure\Structures\Field;

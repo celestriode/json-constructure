@@ -85,7 +85,7 @@ class JsonArray extends AbstractJson
     /**
      * Custom comparison method, called by AbstractJson.compareStructure().
      *
-     * @param InputInterface $input The input to compare with the structure.
+     * @param AbstractJson $input The input to compare with the structure.
      * @param ReportsInterface $reports Reports to add messages to.
      * @param Statistics $statistics Statistics to manipulate.
      * @return boolean
@@ -121,7 +121,7 @@ class JsonArray extends AbstractJson
             // If the individual element failed to match any templates, add report.
 
             if (!$anySucceedsForElement) {
-                $reports->addReport(Message::warn($inputElement->getContext(), 'Unexpected array element at position %s', (string)$index));
+                $input->addStructureReport(Message::warn($inputElement->getContext(), 'Unexpected/invalid array element at position %s', (string)$index), $reports);
 
                 $anySucceeds = false;
             }

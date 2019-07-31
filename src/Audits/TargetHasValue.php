@@ -10,8 +10,8 @@ use Celestriode\JsonConstructure\Structures\AbstractScalar;
 use Celestriode\JsonConstructure\Exceptions\PathException;
 use Celestriode\Constructure\Exceptions\AuditFailed;
 use Celestriode\Constructure\Reports\Message;
-use Celestriode\Constructure\Predicates\PredicateInterface;
 use Celestriode\JsonConstructure\Predicates\AbstractJsonPredicate;
+use Celestriode\Constructure\Utils\MessageUtils;
 
 /**
  * Tests if the element at the provided path contains any of the specified values.
@@ -56,9 +56,7 @@ class TargetHasValue extends AbstractAudit
         // Test the predicate. If it fails, add any issues deriving from it to reports.
 
         if (!$predicate->test($input)) {
-            foreach ($predicate->getIssues() as $issue) {
-                $reports->addReport($issue->getReportMessage());
-            }
+            $this->addIssuesToReports($input, $reports, ...$predicate->getIssues());
 
             return false;
         }
@@ -73,9 +71,9 @@ class TargetHasValue extends AbstractAudit
      *
      * @param JsonPath $targetPath The path to the target Json.
      * @param mixed ...$values The values accepted in Json.
-     * @return PredicateInterface
+     * @return AbstractJsonPredicate
      */
-    public static function getAsPredicate(JsonPath $targetPath, ...$values): PredicateInterface
+    public static function getAsPredicate(JsonPath $targetPath, ...$values): AbstractJsonPredicate
     {
         return new class($targetPath, ...$values) extends AbstractJsonPredicate {
             /** @var JsonPath $targetPath The parsed path to the target element. */
@@ -112,7 +110,7 @@ class TargetHasValue extends AbstractAudit
                     // If it's the wrong datatype, return false.
 
                     if (!($target instanceof AbstractScalar)) {
-                        $this->addIssue(AuditFailed::create(Message::error($input->getContext(), 'Target must be of type "scalar", was instead type %s', $input->getTypeName())));
+                        $this->addIssue(AuditFailed::create(Message::error($input->getContext(), 'Target must be of type "scalar", was instead type %s', MessageUtils::key($input->getTypeName()))));
 
                         return false;
                     }
@@ -120,7 +118,7 @@ class TargetHasValue extends AbstractAudit
                     // Otherwise return whether or not the value exists within the array of accepted values.
                     
                     if (!in_array($target->getValue(), $this->acceptedValues)) {
-                        $this->addIssue(AuditFailed::create(Message::warn($target->getContext(), 'Invalid value %s, should be one of: %s', (string)$target->getValue(), implode(', ', $this->acceptedValues))));
+                        $this->addIssue(AuditFailed::create(Message::warn($target->getContext(), 'Invalid value %s, should be one of: %s', MessageUtils::value((string)$target->getValue()), MessageUtils::value(...$this->acceptedValues))));
 
                         return false;
                     }

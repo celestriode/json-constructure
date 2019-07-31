@@ -7,12 +7,16 @@ use Celestriode\Constructure\Reports\ReportsInterface;
 use Celestriode\Constructure\Reports\Message;
 use Celestriode\Constructure\Statistics\Statistics;
 use Ramsey\Uuid\UuidInterface;
+use Celestriode\Constructure\Utils\StructureReportsTrait;
+use Celestriode\Constructure\Utils\MessageUtils;
 
 /**
  * The parent class of all Json classes.
  */
 abstract class AbstractJson extends AbstractExpectedStructure implements InputInterface, ContextInterface
 {
+    use StructureReportsTrait;
+
     const ANY = -1;
     const INTEGER = 1;
     const DOUBLE = 2;
@@ -49,7 +53,7 @@ abstract class AbstractJson extends AbstractExpectedStructure implements InputIn
     /**
      * Custom comparison method, called by AbstractJson.compareStructure().
      *
-     * @param InputInterface $input The input to compare with the structure.
+     * @param AbstractJson $input The input to compare with the structure.
      * @param ReportsInterface $reports Reports to add messages to.
      * @param Statistics $statistics Statistics to manipulate.
      * @return boolean
@@ -223,7 +227,7 @@ abstract class AbstractJson extends AbstractExpectedStructure implements InputIn
         // If the input is Json but isn't the correct datatype, bad.
 
         if (!($input->isType($this->getType()))) {
-            $reports->addReport(Message::error($input->getContext(), 'Invalid type %s, should instead be %s', $input->getTypeName(), $this->getTypeName()));
+            $input->addStructureReport(Message::error($input->getContext(), 'Invalid type %s, should instead be %s', MessageUtils::key($input->getTypeName()), MessageUtils::key($this->getTypeName())), $reports);
 
             return false;
         }

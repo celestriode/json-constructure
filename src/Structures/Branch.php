@@ -1,7 +1,6 @@
 <?php namespace Celestriode\JsonConstructure\Structures;
 
 use Celestriode\Constructure\Predicates\PredicateInterface;
-use Celestriode\Constructure\InputInterface;
 use Celestriode\Constructure\Reports\ReportsInterface;
 use Celestriode\Constructure\Statistics\Statistics;
 
@@ -107,12 +106,12 @@ class Branch
     /**
      * Returns whether or not the branch can actually be used.
      *
-     * @param InputInterface $input The input to test against.
+     * @param AbstractJson $input The input to test against.
      * @param ReportsInterface $reports Reports to optionally add to. Not done with the default Branch class.
      * @param Statistics $statistics Statistics to add to. Not done with the default Branch class (yet).
      * @return boolean
      */
-    public function succeeds(InputInterface $input, ReportsInterface $reports, Statistics $statistics): bool
+    public function succeeds(AbstractJson $input, ReportsInterface $reports, Statistics $statistics): bool
     {
         return $this->getPredicate()->test($input);
     }

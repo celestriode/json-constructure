@@ -1,5 +1,6 @@
 {
     "name": "celestriode/json-constructure",
+    "description": "Constructure implementation for JSON structures.",
     "authors": [
         {
             "name": "Celestriode",
@@ -12,7 +13,11 @@
         }
     },
     "require": {
-        "celestriode/constructure": "^0.0.1"
+        "php": "^7.0",
+        "celestriode/constructure": "^0.1.0",
+        "celestriode/jsonlint": "^1.0.0",
+        "ramsey/uuid": "^3.8",
+        "phpunit/phpunit": "^8.2"
     },
     "license": "MIT"
 }

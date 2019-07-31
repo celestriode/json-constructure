@@ -138,7 +138,17 @@ class JsonMixed extends AbstractJson
 
         // Did not match any accept Json, add report and return false.
 
-        $input->addStructureReport(Message::error($input->getContext(), 'Invalid type %s, must have been one of: %s', MessageUtils::key($input->getTypeName()), MessageUtils::key($this->getTypeName())), $reports);
+        if ($input->getContainingField() !== null) {
+
+            // Error for contained input.
+
+            $input->addStructureReport(Message::error($input->getContext(), 'Invalid type %s for field %s, must have been one of: %s', MessageUtils::key($input->getTypeName()), MessageUtils::key($input->getContainingField()->getKey()), MessageUtils::key($this->getTypeName())), $reports);
+        } else {
+
+            // Error for uncontained input.
+
+            $input->addStructureReport(Message::error($input->getContext(), 'Invalid type %s, must have been one of: %s', MessageUtils::key($input->getTypeName()), MessageUtils::key($this->getTypeName())), $reports);
+        }
 
         return false;
     }

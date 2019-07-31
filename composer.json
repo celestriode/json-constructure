@@ -14,7 +14,7 @@
     },
     "require": {
         "php": "^7.0",
-        "celestriode/constructure": "^0.2.0",
+        "celestriode/constructure": "^0.3.0",
         "celestriode/jsonlint": "^1.0.0",
         "ramsey/uuid": "^3.8"
     },

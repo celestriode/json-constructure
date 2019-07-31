@@ -29,12 +29,18 @@ abstract class AbstractJson extends AbstractExpectedStructure implements InputIn
     const NUMBER = self::INTEGER | self::DOUBLE;
     const SCALAR = self::NUMBER | self::BOOLEAN | self::STRING;
 
-    /** @var AbstractJson|null $parent The parent structure of this one, if applicable. */
-    private $parent;
+    /** @var mixed $rawInput The input before being turned into AbstractJson. */
+    private $rawInput;
     /** @var array $uuids A mapping of (string)UUID => Json. */
     private static $uuids = [];
     /** @var bool $nullable Whether or not this structure may be null. */
     private $nullable = false;
+    /** @var Field|null $containingField The field that this Json might be contained within. */
+    private $containingField;
+    /** @var int|null $arrayIndex The index that this Json would be at if the parent input is an array. */
+    private $arrayIndex;
+    /** @var AbstractJson|null $parent The parent structure of this one, if applicable. */
+    private $parent;
 
     /**
      * Returns the numerical datatype as a bitfield. Available types include: any, integer, double, boolean, string, array, object, null, number (integer/double), scalar (integer/double/boolean/string).
@@ -59,6 +65,72 @@ abstract class AbstractJson extends AbstractExpectedStructure implements InputIn
      * @return boolean
      */
     abstract public function compareJsonStructure(AbstractJson $input, ReportsInterface $reports, Statistics $statistics): bool;
+
+    /**
+     * Sets the raw input of this Json.
+     *
+     * @param mixed $rawInput The input to set.
+     * @return void
+     */
+    final public function setRawInput($rawInput): void
+    {
+        $this->rawInput = $rawInput;
+    }
+
+    /**
+     * Returns the raw input of this Json.
+     *
+     * @return mixed
+     */
+    final public function getRawInput()
+    {
+        return $this->rawInput;
+    }
+
+    /**
+     * Sets the field that this Json is contained within.
+     *
+     * @param Field $containingField The field containing the Json.
+     * @return void
+     */
+    final public function setContainingField(Field $containingField = null): void
+    {
+        $this->containingField = $containingField;
+    }
+
+    /**
+     * Returns the field that this Json might be contained within.
+     *
+     * @return Field|null
+     */
+    final public function getContainingField(): ?Field
+    {
+        return $this->containingField;
+    }
+
+    /**
+     * Sets the array index that this Json would have if the parent input
+     * is an array.
+     *
+     * @param integer $arrayIndex The index within the parent array.
+     * @return void
+     */
+    public function setArrayIndex(int $arrayIndex = null): void
+    {
+        $this->arrayIndex = $arrayIndex;
+    }
+
+    /**
+     * Returns the array index that this Json would have if it's in an array.
+     *
+     * Returns null if it does not have a index.
+     *
+     * @return integer|null
+     */
+    final public function getArrayIndex(): ?int
+    {
+        return $this->arrayIndex;
+    }
 
     /**
      * Compares the input to the expected structure.
@@ -227,7 +299,17 @@ abstract class AbstractJson extends AbstractExpectedStructure implements InputIn
         // If the input is Json but isn't the correct datatype, bad.
 
         if (!($input->isType($this->getType()))) {
-            $input->addStructureReport(Message::error($input->getContext(), 'Invalid type %s, should instead be %s', MessageUtils::key($input->getTypeName()), MessageUtils::key($this->getTypeName())), $reports);
+            if ($input->getContainingField() !== null) {
+
+                // Error for contained input.
+
+                $input->addStructureReport(Message::error($input->getContext(), 'Invalid type %s for field %s, should instead be %s', MessageUtils::key($input->getTypeName()), MessageUtils::key($input->getContainingField()->getKey()), MessageUtils::key($this->getTypeName())), $reports);
+            } else {
+
+                // Error for uncontained input.
+
+                $input->addStructureReport(Message::error($input->getContext(), 'Invalid type %s, should instead be %s', MessageUtils::key($input->getTypeName()), MessageUtils::key($this->getTypeName())), $reports);
+            }
 
             return false;
         }

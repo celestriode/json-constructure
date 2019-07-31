@@ -51,19 +51,32 @@ class Json
         if ($data === null) {
             return new JsonNull();
         } elseif (is_string($data)) {
-            return new JsonString($data);
+            $json = new JsonString($data);
+            $json->setRawInput($data);
+            
+            return $json;
         } elseif ($data === true || $data === false) {
-            return new JsonBoolean($data);
+            $json = new JsonBoolean($data);
+            $json->setRawInput($data);
+            
+            return $json;
         } elseif (is_double($data)) {
-            return new JsonDouble($data);
+            $json = new JsonDouble($data);
+            $json->setRawInput($data);
+            
+            return $json;
         } elseif (is_integer($data)) {
-            return new JsonInteger($data);
+            $json = new JsonInteger($data);
+            $json->setRawInput($data);
+            
+            return $json;
         }
 
         // Handle objects.
 
         if ($data instanceof \stdClass) {
             $object = new JsonObject();
+            $object->setRawInput($data);
 
             foreach ($data as $key => $value) {
                 $object->setField(Field::key($key, static::turnDataIntoStructure($value)));
@@ -76,6 +89,7 @@ class Json
 
         if (is_array($data)) {
             $array = new JsonArray();
+            $array->setRawInput($data);
 
             foreach ($data as $element) {
                 $array->addElements(static::turnDataIntoStructure($element));
@@ -194,7 +208,7 @@ class Json
      */
     public static function number(float $value = null): JsonMixed
     {
-        return static::mixed(static::integer((int)$value), static::double($value));
+        return static::mixed(static::integer($value === null ? null : (int)$value), static::double($value));
     }
 
     /**

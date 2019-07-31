@@ -7,6 +7,7 @@ use Celestriode\Constructure\Reports\Message;
 use Celestriode\Constructure\Predicates\PredicateInterface;
 use Celestriode\JsonConstructure\Exceptions\MissingKey;
 use Celestriode\Constructure\Utils\MessageUtils;
+use Celestriode\JsonConstructure\Utils\JsonPrettifier;
 
 /**
  * A Json object structure.
@@ -59,30 +60,21 @@ class JsonObject extends AbstractJson
      */
     public function contextToString(PrettifySupplierInterface $prettifySupplier = null): string
     {
-        $buffer = '{';
-        $i = 0;
-        $max = count($this->getFields());
+        // If this Json belongs to a field, have the field do the work.
 
-        // Cycle through each of the accepted fields. TODO: list of available branches?
-
-        foreach ($this->getFields() as $key => $field) {
-
-            // Add the field to the buffer.
-
-            $buffer .= '"' . $key . '":' . $field->getJson()->contextToString($prettifySupplier);
-
-            // If there are more fields, add a comma.
-
-            if ($i + 1 < $max) {
-                $buffer .= ',';
-            }
-
-            $i++;
+        if ($this->getContainingField() !== null) {
+            return $this->getContainingField()->fieldToContextString($prettifySupplier);
         }
 
-        // Return the completed buffer.
+        // If a JsonPrettifier is supplied, use that to prettify.
+        
+        if ($prettifySupplier instanceof JsonPrettifier && $this->getRawInput() instanceof \stdClass) {
+            return $prettifySupplier->prettifyObject($this->getRawInput(), $this);
+        }
 
-        return $buffer . '}';
+        // Otherwise just do basic JSON encoding.
+
+        return json_encode($this->getRawInput());
     }
 
     /**
@@ -119,7 +111,7 @@ class JsonObject extends AbstractJson
      *
      * If no such field exists, an error is thrown.
      *
-     * @param string $key
+     * @param string $key The key of the field to return.
      * @return Field
      */
     public function getField(string $key): Field
@@ -211,7 +203,17 @@ class JsonObject extends AbstractJson
 
                 // Bad if it's required and not specified.
 
-                $input->addStructureReport(Message::error($input->getContext(), 'Missing required field %s', MessageUtils::key($key)), $reports);
+                if ($input->getContainingField() !== null) {
+
+                    // Error for contained input.
+
+                    $input->addStructureReport(Message::error($input->getContext(), 'Missing required nested field %s for object %s', MessageUtils::key($key), MessageUtils::key($input->getContainingField()->getKey())), $reports);
+                } else {
+
+                    // Error for uncontained input.
+
+                    $input->addStructureReport(Message::error($input->getContext(), 'Missing required field %s', MessageUtils::key($key)), $reports);
+                }
 
                 $allSucceeds = false;
             } elseif ($input->hasField($key) && !$field->getJson()->compareStructure($input->getField($key)->getJson(), $reports, $statistics)) {

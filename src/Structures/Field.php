@@ -1,5 +1,8 @@
 <?php namespace Celestriode\JsonConstructure\Structures;
 
+use Celestriode\Constructure\Reports\PrettifySupplierInterface;
+use Celestriode\JsonConstructure\Utils\JsonPrettifier;
+
 /**
  * A key/value field used by JsonObject.
  *
@@ -85,7 +88,16 @@ class Field
      */
     public function setJson(AbstractJson $json): void
     {
+        // If there was already Json, remove its reference to this field.
+
+        if ($this->json !== null) {
+            $this->json->setContainingField();
+        }
+
+        // Contain the new Json.
+
         $this->json = $json;
+        $json->setContainingField($this);
     }
 
     /**
@@ -113,6 +125,29 @@ class Field
         $this->isPlaceholder = $placeholder;
 
         return $this;
+    }
+
+    /**
+     * Turns the field into a string for context.
+     *
+     * @param PrettifySupplierInterface $prettifier The optional prettifier.
+     * @return string
+     */
+    public function fieldToContextString(PrettifySupplierInterface $prettifier = null): string
+    {
+        // Get either the parent's raw input if existent, or just the contained Json's input.
+
+        $json = ($this->getJson()->getParentInput() !== null) ? $this->getJson()->getParentInput()->getRawInput() : $this->getJson()->getRawInput();
+
+        // Use the prettifier if supplied.
+
+        if ($prettifier instanceof JsonPrettifier) {
+            return $prettifier->prettifyObject($json);
+        }
+
+        // Otherwise just do basic JSON encoding.
+
+        return (string)json_encode($json);
     }
 
     /**

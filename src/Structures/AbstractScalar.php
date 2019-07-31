@@ -59,12 +59,34 @@ abstract class AbstractScalar extends AbstractJson
      */
     public function contextToString(PrettifySupplierInterface $prettifySupplier = null): string
     {
-        if ($prettifySupplier !== null) {
+        // If there's a parent input, that will be more helpful for display. Use it.
 
-            return $prettifySupplier->prettify((string)$this->getValue());
+        $json = $this->getParentInput() !== null ? $this->getParentInput() : $this;
+
+        // If this Json belongs to a field, have the field do the work.
+
+        if ($json->getContainingField() !== null) {
+            return $json->getContainingField()->fieldToContextString($prettifySupplier);
         }
 
-        return (string)json_encode($this->getValue());
+        // If a JsonPrettifier is supplied, use that to prettify.
+
+        if ($prettifySupplier !== null) {
+            if ($json instanceof self) {
+
+                // Prettify this value if there was no parent.
+
+                return $prettifySupplier->prettifyValue((string)$json->getValue());
+            }
+
+            // Otherwise prettify the parent.
+
+            return $json->contextToString($prettifySupplier);
+        }
+
+        // Otherwise just do basic JSON encoding.
+
+        return (string)json_encode($json->getRawInput());
     }
 
     /**
@@ -97,7 +119,11 @@ abstract class AbstractScalar extends AbstractJson
         // If the expected structure actually has a value (which should be a rare event), check if it matches the input's value.
 
         if ($this->getValue() !== null && $input->getValue() !== $this->getValue()) {
-            $input->addStructureReport(Message::warn($input->getContext(), 'Value %s does not match the expected value %s', MessageUtils::value((string)$input->getValue()), MessageUtils::value((string)$this->getValue())), $reports);
+            if ($input->getContainingField() !== null) {
+                $input->addStructureReport(Message::warn($input->getContext(), 'Value %s for field %s does not match the expected value %s', MessageUtils::value((string)$input->getValue()), MessageUtils::key($input->getContainingField()->getKey()), MessageUtils::value((string)$this->getValue())), $reports);
+            } else {
+                $input->addStructureReport(Message::warn($input->getContext(), 'Value %s does not match the expected value %s', MessageUtils::value((string)$input->getValue()), MessageUtils::value((string)$this->getValue())), $reports);
+            }
 
             return false;
         }

@@ -4,6 +4,8 @@ use Celestriode\Constructure\Reports\PrettifySupplierInterface;
 use Celestriode\Constructure\Reports\ReportsInterface;
 use Celestriode\Constructure\Statistics\Statistics;
 use Celestriode\Constructure\Reports\Message;
+use Celestriode\Constructure\Utils\MessageUtils;
+use Celestriode\JsonConstructure\Utils\JsonPrettifier;
 
 /**
  * A Json array structure.
@@ -60,26 +62,21 @@ class JsonArray extends AbstractJson
      */
     public function contextToString(PrettifySupplierInterface $prettifySupplier = null): string
     {
-        $buffer = '[';
+        // If this Json belongs to a field, have the field do the work.
 
-        // Cycle through each element.
-
-        for ($i = 0, $j = count($this->getElements()); $i < $j; $i++) {
-
-            // Append buffer with the element's value.
-
-            $buffer .= $this->getElements()[$i]->contextToString($prettifySupplier);
-
-            // If there's more elements available, add a comma.
-
-            if ($i + 1 < $j) {
-                $buffer .= ',';
-            }
+        if ($this->getContainingField() !== null) {
+            return $this->getContainingField()->fieldToContextString($prettifySupplier);
         }
 
-        // Return the completed buffer.
+        // If a JsonPrettifier is supplied, use that to prettify.
 
-        return $buffer . ']';
+        if ($prettifySupplier instanceof JsonPrettifier && is_array($this->getRawInput())) {
+            return $prettifySupplier->prettifyArray($this->getRawInput(), $this);
+        }
+
+        // Otherwise just do basic JSON encoding.
+
+        return json_encode($this->getRawInput());
     }
 
     /**
@@ -121,7 +118,17 @@ class JsonArray extends AbstractJson
             // If the individual element failed to match any templates, add report.
 
             if (!$anySucceedsForElement) {
-                $input->addStructureReport(Message::warn($inputElement->getContext(), 'Unexpected/invalid array element at position %s', (string)$index), $reports);
+                if ($input->getContainingField() !== null) {
+
+                    // Error for contained input.
+
+                    $input->addStructureReport(Message::warn($inputElement->getContext(), 'Unexpected/invalid array element for array %s at position %s', MessageUtils::key($input->getContainingField()->getKey()), (string)$index), $reports);
+                } else {
+
+                    // Error for uncontained input.
+
+                    $input->addStructureReport(Message::warn($inputElement->getContext(), 'Unexpected/invalid array element at position %s', (string)$index), $reports);
+                }
 
                 $anySucceeds = false;
             }
@@ -146,6 +153,7 @@ class JsonArray extends AbstractJson
 
             $this->elements[] = $element;
             $element->setParentInput($this);
+            $element->setArrayIndex(count($this->elements) - 1);
         }
     }
 

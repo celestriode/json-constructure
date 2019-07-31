@@ -43,6 +43,11 @@ use Celestriode\Constructure\Utils\MessageUtils;
  */
 class JsonPath
 {
+    const TOKEN_ROOT = '$';
+    const TOKEN_CHILD = '.';
+    const TOKEN_ASCEND = '^';
+    const TOKEN_CURRENT = '@';
+
     /** @var string $rawPath The raw path before parsing. */
     private $rawPath;
     /** @var array $path The resulting path, parsed from string. */
@@ -108,8 +113,8 @@ class JsonPath
 
         // If the first character isn't current or root, throw error.
 
-        if ($stringParts[0] != '@' && $stringParts[0] != '$') {
-            throw new \LogicException('Path must begin with current (@) or root ($)');
+        if ($stringParts[0] != self::TOKEN_CURRENT && $stringParts[0] != self::TOKEN_ROOT) {
+            throw new \LogicException('Path must begin with current (' . self::TOKEN_CURRENT . ') or root (' . self::TOKEN_ROOT . ')');
         }
 
         // Cycle through each character
@@ -130,7 +135,7 @@ class JsonPath
 
                 // If the next character is an unescaped control character, we're done with this child.
 
-                if (($i + 1 != $j && in_array($stringParts[$i + 1], ['$', '^', '.']) && $currentChar !== '\\') || $i + 1 == $j) {
+                if (($i + 1 != $j && in_array($stringParts[$i + 1], [self::TOKEN_ROOT, self::TOKEN_ASCEND, self::TOKEN_CHILD]) && $currentChar !== '\\') || $i + 1 == $j) {
                     $path[$currentPathIndex - 1]['key'] = $buffer;
                     $buffer = '';
                     $findingKey = false;
@@ -139,7 +144,7 @@ class JsonPath
 
                 // Type: @ (current)
 
-                if ($currentChar == '@') {
+                if ($currentChar == self::TOKEN_CURRENT) {
                     if ($i != 0) {
                         throw new \LogicException('Cannot use current if not at beginning');
                     }
@@ -147,7 +152,7 @@ class JsonPath
                     $path[] = [
                         'type' => 'current'
                     ];
-                } elseif ($currentChar == '$') {
+                } elseif ($currentChar == self::TOKEN_ROOT) {
 
                     // Type: $ (root)
 
@@ -158,7 +163,7 @@ class JsonPath
                     $path[] = [
                         'type' => 'root'
                     ];
-                } elseif ($currentChar == '^') {
+                } elseif ($currentChar == self::TOKEN_ASCEND) {
 
                     // Type: ^ (ascend)
 
@@ -173,7 +178,7 @@ class JsonPath
                     $path[] = [
                         'type' => 'ascend'
                     ];
-                } elseif ($currentChar == '.') {
+                } elseif ($currentChar == self::TOKEN_CHILD) {
 
                     // Type: . (child)
 
@@ -274,5 +279,47 @@ class JsonPath
         // Otherwise parse, save, and return the path.
 
         return self::$cachedPaths[$path] = new static($path);
+    }
+
+    /**
+     * Creates a non-conforming path string to show the user the path
+     * to the current Json.
+     *
+     * This string currently cannot be used as a path for JsonPath.
+     * The primary purpose is for display.
+     *
+     * @param AbstractJson $json The nested Json to get a path to.
+     * @return string
+     */
+    public static function fromJson(AbstractJson $json): string
+    {
+        $buffer = '';
+        $current = $json;
+
+        // Cycle through the parental tree of the supplied Json.
+
+        while ($current->getParentInput() !== null) {
+
+            // If the current parent is inside an array, mark it as such.
+
+            if ($current->getArrayIndex() !== null) {
+                $buffer =  '[' . ($current->getArrayIndex() ?? '?') . ']' . $buffer;
+                ;
+            }
+
+            // If the current parent is inside an object, mark it as such.
+
+            if ($current->getContainingField() !== null) {
+                $buffer = self::TOKEN_CHILD . $current->getContainingField()->getKey() . $buffer;
+            }
+
+            // Set the current as the parent.
+
+            $current = $current->getParentInput();
+        }
+
+        // Return the buffer with the root token.
+
+        return self::TOKEN_ROOT . $buffer;
     }
 }

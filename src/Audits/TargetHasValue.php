@@ -118,7 +118,17 @@ class TargetHasValue extends AbstractAudit
                     // Otherwise return whether or not the value exists within the array of accepted values.
                     
                     if (!in_array($target->getValue(), $this->acceptedValues)) {
-                        $this->addIssue(AuditFailed::create(Message::warn($target->getContext(), 'Invalid value %s, should be one of: %s', MessageUtils::value((string)$target->getValue()), MessageUtils::value(...$this->acceptedValues))));
+                        if ($target->getContainingField() !== null) {
+
+                            // Error for contained input.
+
+                            $this->addIssue(AuditFailed::create(Message::warn($target->getContext(), 'Invalid value %s for field %s, should be one of: %s', MessageUtils::value((string)$target->getValue()), MessageUtils::key($target->getContainingField()->getKey()), MessageUtils::value(...$this->acceptedValues))));
+                        } else {
+
+                            // Error for uncontained input.
+
+                            $this->addIssue(AuditFailed::create(Message::warn($target->getContext(), 'Invalid value %s, should be one of: %s', MessageUtils::value((string)$target->getValue()), MessageUtils::value(...$this->acceptedValues))));
+                        }
 
                         return false;
                     }
